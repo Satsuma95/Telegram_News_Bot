@@ -1,3 +1,4 @@
+import json
 import time
 import random
 import requests
@@ -24,6 +25,24 @@ def news(message):
     else:
         print ("404")
 
+@AXTUNG.message_handler(commands=['Help'])
+def help(message):
+    AXTUNG.send_message(message.chat.id, text="давай сюда жалобу мы обязательно её разберём (когда нибудь)")
+    AXTUNG.register_next_step_handler(message,otsiv)
+
+def otsiv(message):
+    me = message.text
+    yj = read("y.json")
+    yj.append({"text":me})
+    write("y.json",yj)
+    AXTUNG.forward_message(admin,message.from_user.id,message.message_id)
+def read(name):
+    with open(f"{name}", 'r', encoding="UTF-8") as f:
+        js = json.load(f)
+        return js
+def write(name,dannie):
+    with open(name, 'w', encoding="UTF-8") as fuile:
+        json.dump(dannie, fuile, ensure_ascii=False)
 
 
 def api(user_mes):
@@ -43,6 +62,9 @@ def api(user_mes):
 
     return finmes
 
+@AXTUNG.message_handler(commands=['vosimi'])
+def admmen(message):
+    pass
 
 @AXTUNG.message_handler(content_types=['text'])
 def text(message):
@@ -53,12 +75,12 @@ AXTUNG.polling()
 
 
 """
-сделать функционал, по которому можно будет отправлять сообщение пользователю
+
 смысл такой:
-/send 34873847 привет, как дела? -  эту строчку разделить на команду сенд, айдишник и сам текст
-после чего просто отправить сообщение челу по айдишнику. если всё будет ок, то сделать тоже самое в обратную сторону
-/send_adm привет, го в сэтисфектори??!!?!?!
-и всё сообщение должно улететь тебе :)
+/send 34873847 привет, как дела? -  эту строчку разделить на команду сенд, айдишник и сам текст (нужен будет сплит)
+после чего просто отправить сообщение челу по айдишнику (отправить сообщение)
+
+задание, прям как в ньюс делали, аналогично
 
 
 """
